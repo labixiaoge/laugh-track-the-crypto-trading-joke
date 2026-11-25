@@ -7,7 +7,7 @@
 // lesson" pays it off, and the stop-loss line adds a second true-to-life
 // punch — a stop-loss is only a suggestion, and the market declines it.
 // One line, no throat clearing, punchline at the end.
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 const JOKE =
   "I bought the dip. The dip bought a shovel. Now my portfolio is a geology lesson and my stop-loss is just a suggestion the market declined.";
@@ -19,3 +19,11 @@ if ([...JOKE].length < 1 || [...JOKE].length > 200 || !/\S/.test(JOKE)) {
 
 mkdirSync("/output", { recursive: true });
 writeFileSync("/output/entry.txt", JOKE, "utf8");
+
+// Read it back: the file the judge sees must be byte for byte the joke,
+// and the gate must still see 1-200 characters.
+const written = readFileSync("/output/entry.txt", "utf8");
+if (written !== JOKE || [...written].length > 200) {
+  throw new Error("entry.txt verification failed");
+}
+console.log(`wrote ${[...written].length} chars to /output/entry.txt`);
